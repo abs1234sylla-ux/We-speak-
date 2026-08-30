@@ -1,0 +1,69 @@
+# Dépendances Node
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Environnement
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Capacitor
+.capacitor/
+capacitor-cordova-plugin-list.json
+
+# Android
+android/
+build/
+.gradle
+.gradle/
+gradlew
+gradlew.bat
+local.properties
+
+# iOS (si applicable)
+ios/
+
+# Build outputs
+dist/
+build/
+out/
+*.apk
+*.ipa
+*.app
+
+# Logs
+logs/
+*.log
+
+# Temp files
+tmp/
+temp/
+.tmp
+
+# OS
+Thumbs.db
+.DS_Store
+*.exe
+
+# Tests
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+.eslintcache
