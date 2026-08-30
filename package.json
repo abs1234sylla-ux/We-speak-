@@ -1,0 +1,46 @@
+{
+  "name": "we-speak",
+  "version": "1.0.0",
+  "description": "Application de communication multi-plateforme",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "npm run build:web && npm run build:mobile",
+    "build:web": "echo 'Building web version...'",
+    "build:mobile": "capacitor build android",
+    "cap:add": "capacitor add android",
+    "cap:sync": "capacitor sync",
+    "cap:open": "capacitor open android",
+    "cap:run": "capacitor run android",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "keywords": [
+    "communication",
+    "chat",
+    "web",
+    "mobile",
+    "capacitor"
+  ],
+  "author": "abs1234sylla-ux",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "helmet": "^7.1.0",
+    "body-parser": "^1.20.2",
+    "socket.io": "^4.7.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "@capacitor/cli": "^5.7.0",
+    "@capacitor/core": "^5.7.0",
+    "@capacitor/android": "^5.7.0",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0"
+  }
+}

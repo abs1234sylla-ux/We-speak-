@@ -1,0 +1,22 @@
+{
+  "appId": "com.wespeak.app",
+  "appName": "We-speak",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "~/.android/release.keystore",
+      "keystoreAlias": "release",
+      "keystoreAliasPassword": "KEYSTORE_PASSWORD",
+      "keystorePassword": "KEYSTORE_PASSWORD",
+      "releaseType": "APK"
+    }
+  }
+}

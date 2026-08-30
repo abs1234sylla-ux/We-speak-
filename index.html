@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="We-speak - Application de communication multi-plateforme">
+    <meta name="theme-color" content="#6366f1">
+    <title>We-speak - Communication</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #818cf8;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --border: #e5e7eb;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            max-height: 600px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .connection-status {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .connection-status.connected::before {
+            content: "● ";
+            color: var(--success);
+        }
+
+        .connection-status.disconnected::before {
+            content: "● ";
+            color: var(--danger);
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--light);
+        }
+
+        .setup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-group input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group button {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .form-group button:hover:not(:disabled) {
+            background: var(--secondary);
+        }
+
+        .form-group button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.system {
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+            font-style: italic;
+            padding: 10px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+
+        .message.own {
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+
+        .message.own .message-content {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.other .message-content {
+            background: white;
+            color: var(--dark);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-meta {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+            padding: 0 16px;
+        }
+
+        .message.typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #9ca3af;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .input-area input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .input-area button {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .input-area button:hover:not(:disabled) {
+            background: var(--secondary);
+        }
+
+        .input-area button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎤 We-speak</h1>
+            <p>Communication en temps réel</p>
+            <div class="connection-status disconnected" id="connectionStatus">Déconnecté</div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-container" id="chatContainer">
+            <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <p>Bienvenue sur We-speak!</p>
+                <p style="font-size: 12px; margin-top: 8px;">Rejoignez une salle pour commencer à communiquer</p>
+            </div>
+        </div>
+
+        <!-- Setup Form (visible initially) -->
+        <div id="setupForm" class="input-area" style="display: flex; flex-direction: column;">
+            <div class="form-group">
+                <input type="text" id="usernameInput" placeholder="Votre nom..." maxlength="20">
+                <button onclick="setupUser()">Continuer</button>
+            </div>
+        </div>
+
+        <!-- Message Input (hidden initially) -->
+        <div id="messageInputArea" class="input-area" style="display: none;">
+            <input type="text" id="messageInput" placeholder="Tapez un message..." autocomplete="off">
+            <button onclick="sendMessage()">Envoyer</button>
+        </div>
+    </div>
+
+    <!-- Socket.io Client -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Variables globales
+        const socket = io();
+        let currentUser = null;
+        let currentRoom = 'general';
+        let isConnected = false;
+
+        // Éléments DOM
+        const chatContainer = document.getElementById('chatContainer');
+        const setupForm = document.getElementById('setupForm');
+        const messageInputArea = document.getElementById('messageInputArea');
+        const usernameInput = document.getElementById('usernameInput');
+        const messageInput = document.getElementById('messageInput');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        // Événements Socket.io
+        socket.on('connect', () => {
+            isConnected = true;
+            updateConnectionStatus(true);
+            console.log('Connecté au serveur');
+        });
+
+        socket.on('disconnect', () => {
+            isConnected = false;
+            updateConnectionStatus(false);
+            console.log('Déconnecté du serveur');
+        });
+
+        socket.on('receive_message', (data) => {
+            displayMessage(data.user, data.message, data.timestamp, currentUser === data.user);
+        });
+
+        socket.on('user_joined', (data) => {
+            displaySystemMessage(data.message);
+        });
+
+        socket.on('user_left', (data) => {
+            displaySystemMessage(data.message);
+        });
+
+        socket.on('user_typing', (data) => {
+            if (data.user !== currentUser) {
+                displayTypingIndicator(data.user);
+            }
+        });
+
+        // Fonctions
+        function updateConnectionStatus(connected) {
+            connectionStatus.className = `connection-status ${connected ? 'connected' : 'disconnected'}`;
+            connectionStatus.textContent = connected ? 'Connecté' : 'Déconnecté';
+        }
+
+        function setupUser() {
+            const username = usernameInput.value.trim();
+            if (!username) {
+                alert('Veuillez entrer un nom d\'utilisateur');
+                return;
+            }
+
+            currentUser = username;
+            setupForm.style.display = 'none';
+            messageInputArea.style.display = 'flex';
+            chatContainer.innerHTML = '';
+
+            socket.emit('join_room', {
+                room: currentRoom,
+                username: currentUser
+            });
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message || !currentUser) return;
+
+            socket.emit('send_message', {
+                room: currentRoom,
+                message: message,
+                username: currentUser
+            });
+
+            displayMessage(currentUser, message, new Date().toISOString(), true);
+            messageInput.value = '';
+        }
+
+        function displayMessage(username, message, timestamp, isOwn) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${isOwn ? 'own' : 'other'}`;
+
+            const time = new Date(timestamp).toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            messageEl.innerHTML = `
+                <div class="message-content">${escapeHtml(message)}</div>
+                <div class="message-meta">${username} • ${time}</div>
+            `;
+
+            chatContainer.appendChild(messageEl);
+            scrollToBottom();
+        }
+
+        function displaySystemMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message system';
+            messageEl.textContent = message;
+            chatContainer.appendChild(messageEl);
+            scrollToBottom();
+        }
+
+        function displayTypingIndicator(username) {
+            const existingIndicator = document.getElementById(`typing-${username}`);
+            if (existingIndicator) {
+                existingIndicator.remove();
+            }
+
+            const messageEl = document.createElement('div');
+            messageEl.id = `typing-${username}`;
+            messageEl.className = 'message other message typing-indicator';
+            messageEl.innerHTML = `
+                <strong>${username}</strong> écrit
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            `;
+
+            chatContainer.appendChild(messageEl);
+            scrollToBottom();
+
+            setTimeout(() => {
+                if (existingIndicator) existingIndicator.remove();
+            }, 3000);
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // Événements clavier
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') setupUser();
+        });
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        messageInput.addEventListener('input', () => {
+            socket.emit('user_typing', {
+                room: currentRoom,
+                username: currentUser
+            });
+        });
+
+        // Focus initial
+        usernameInput.focus();
+    </script>
+</body>
+</html>
