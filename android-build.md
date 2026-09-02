@@ -1,4 +1,4 @@
-.github/workflows/android.yml
+.github/workflows/android.yml.
 name: We Speak Android Build
 
 on:
