@@ -1,6 +1,6 @@
 # 🎤 We-speak - Communication en Temps Réel
 
-Une application de communication multi-plateforme moderne construite avec **Node.js**, **Express**, **Socket.io** et **Capacitor**.
+Une application de communication multi-plateforme moderne construite avec **Abdramane sylla **, **Express**, **Socket.io** et **Capacitor**.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-14+-green.svg)
