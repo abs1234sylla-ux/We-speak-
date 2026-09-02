@@ -19,8 +19,9 @@ jobs:
           node-version: 20
            
 
-      - name: Install dependencies
-        run: npm install
+            - name: Install dependencies
+        run: npm install --package-lock=false
+    
 
       - name: Build web app
         run: npm run build
