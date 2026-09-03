@@ -1,3 +1,4 @@
+
 name: Android Build
 
 on:
@@ -17,15 +18,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-           
 
-            - name: Install dependencies
-        run: npm install 
---package-lock=false
-    
+      - name: Install dependencies
+        run: npm install --package-lock=false
 
       - name: Build web app
         run: npm run build
+
+      - name: Add Android platform if missing
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
 
       - name: Sync Capacitor Android
         run: npx cap sync android
