@@ -1,4 +1,3 @@
-
 name: Android Build
 
 on:
@@ -22,14 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm install --package-lock=false
 
-      - name: Build web app
-        run: npm run build
-
       - name: Add Android platform if missing
         run: |
           if [ ! -d "android" ]; then
             npx cap add android
           fi
+
+      - name: Build web app
+        run: npm run build
 
       - name: Sync Capacitor Android
         run: npx cap sync android
