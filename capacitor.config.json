@@ -1,7 +1,7 @@
 {
   "appId": "com.wespeak.app",
   "appName": "We-speak",
-  "webDir": ".",
+  "webDir": "www",
   "server": {
     "androidScheme": "https"
   },
