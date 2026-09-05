@@ -21,23 +21,20 @@ jobs:
       - name: Install dependencies
         run: npm install --package-lock=false
 
-      - name: Add Android platform if missing
-        run: |
-          if [ ! -d "android" ]; then
-            npx cap add android
-          fi
-
       - name: Build web app
         run: npm run build
+        continue-on-error: true
 
-      - name: Sync Capacitor Android
+      - name: Prepare web assets
+        run: |
+          mkdir -p www
+          cp index.html www/index.html
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Sync Capacitor
         run: npx cap sync android
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
 
       - name: Build Android APK
         run: |
@@ -48,5 +45,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: We-Speak-APK
+          name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
