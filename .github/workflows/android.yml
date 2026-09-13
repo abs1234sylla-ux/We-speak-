@@ -11,39 +11,37 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
+          package-manager-cache: false
 
       - name: Install dependencies
         run: npm install --package-lock=false
 
-      - name: Build web app
+      - name: Build web
         run: npm run build
-        continue-on-error: true
-
-      - name: Prepare web assets
-        run: |
-          mkdir -p www
-          cp index.html www/index.html
-
-      - name: Add Android platform
-        run: npx cap add android
 
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Build Android APK
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
-          name: app-debug
+          name: We-Speak-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
